@@ -4,25 +4,33 @@
 */
 import "../styles.css";
 
-class Cl_Menor {
-  constructor(a) {
-    this.atributo = a;
+class Cl_Articulo {
+  constructor(a, b, c) {
+    this.nombre = a;
+    this.precio = b;
+    this.cantidad = c;
   }
 
-  Metodo(parametro) {
-    return parametro;
+  SubTotal() {
+    return this.precio * this.cantidad;
   }
 }
 
-class Cl_Mayor {
+class Cl_Factura {
   constructor() {
-    this.contadorTotalClaseMenor = 0;
-    this.acumuladorDeCantidadDeLetras = 0;
+    this.acumMonto = 0;
   }
 
-  ProcesarMenor(menor) {
-    this.acumuladorDeCantidadDeLetras += menor.atributo.length;
-    this.contadorTotalClaseMenor++;
+  Total() {
+    return this.acumMonto + this.Iva();
+  }
+
+  Iva() {
+    return this.acumMonto * 0.16;
+  }
+
+  ProcesarFactura(articulo) {
+    this.acumMonto += articulo.SubTotal();
   }
 }
 
@@ -37,53 +45,69 @@ class App {
   TableHead() {
     return `
     <tr>
-      <th>atributo</th>
-      <th>Metodo( )</th>
+      <th>Nombre</th>
+      <th>Precio</th>
+      <th>Cantidad</th>
+      <th>SubTotal()</th>
     </tr>
     `;
   }
 
-  TableRow(atributo, metodo) {
+  TableRow(nombre, precio, cantidad, subtotal) {
     return `
     <tr>
-      <td>${atributo}</td>
-      <td>${metodo}</td>
+      <td>${nombre}</td>
+      <td>${precio}</td>
+      <td>${cantidad}</td>
+      <td>${subtotal}</td>
     </tr>
     `;
   }
 
-  TableFoot(totalPagos) {
+  TableFoot(subtotal, iva, total) {
     return `
-    <tr>
-      <th colspan="1">Total letras de los nombre</th>
-      <th>${totalPagos}</th>
-    </tr>
+        <p>subtotal</p>
+        <p>${subtotal}</p>
+        <p>iva</p>
+        <p>${iva}</p>
+        <p >total</p>
+        <p>${total}</p>
     `;
   }
 
   run() {
-    let mayor = new Cl_Mayor();
-    let menor1 = new Cl_Menor("Nombre", 1);
-    let menor2 = new Cl_Menor("Nombre2", 1);
+    let factura = new Cl_Factura();
 
-    mayor.ProcesarMenor(menor1);
-    mayor.ProcesarMenor(menor2);
+    let articulo_1 = new Cl_Articulo("Harina", 20, 20);
+    let articulo_2 = new Cl_Articulo("Leche", 20, 20);
+    let articulo_3 = new Cl_Articulo("Cafe", 20, 20);
+    let articulo_4 = new Cl_Articulo("Azucar", 20, 20);
+    let articulo_5 = new Cl_Articulo("Arroz", 20, 20);
+
+    factura.ProcesarFactura(articulo_1);
+    factura.ProcesarFactura(articulo_2);
+    factura.ProcesarFactura(articulo_3);
+    factura.ProcesarFactura(articulo_4);
+    factura.ProcesarFactura(articulo_5);
 
     this.salidaCabecera.innerHTML = `
       ${this.TableHead()}
     `;
 
     this.salidaRegistros.innerHTML = `
-      ${this.TableRow(menor1.atributo, menor1.Metodo(":D"))}
-      ${this.TableRow(menor2.atributo, menor2.Metodo(":("))}
-    `;
+      ${this.TableRow(articulo_1.nombre, articulo_1.precio, articulo_1.cantidad, articulo_1.SubTotal())}
+      ${this.TableRow(articulo_2.nombre, articulo_2.precio, articulo_2.cantidad, articulo_2.SubTotal())}
+      ${this.TableRow(articulo_3.nombre, articulo_3.precio, articulo_3.cantidad, articulo_3.SubTotal())}
+      ${this.TableRow(articulo_4.nombre, articulo_4.precio, articulo_4.cantidad, articulo_4.SubTotal())}
+      ${this.TableRow(articulo_5.nombre, articulo_5.precio, articulo_5.cantidad, articulo_5.SubTotal())}
+      `;
 
     this.salidaPie.innerHTML = `
-      ${this.TableFoot(mayor.acumuladorDeCantidadDeLetras)}
+      ${this.TableFoot(factura.acumMonto, factura.Iva(), factura.Total())}
     `;
 
     this.salidaRespuestas.innerHTML = `
-      <h3>a) total de registros: ${mayor.contadorTotalClaseMenor} </h3>
+      <h3>a) total de registros:  </h3>
     `;
   }
 }
